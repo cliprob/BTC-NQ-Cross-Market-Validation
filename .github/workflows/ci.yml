@@ -16,7 +16,9 @@ jobs:
       - run: pip install -e ".[dev]"
       - run: ruff check .
       - run: ruff format --check cross_market tests data/download_binance.py
-      - run: mypy cross_market
+      # The frozen research source was type-checked and executed on Windows; pin
+      # mypy's platform so NumPy integer aliases match the locked source hash.
+      - run: mypy --platform win32 cross_market
       - run: pytest
       - name: Verify committed research artifacts
         run: >-
