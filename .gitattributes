@@ -1,2 +1,6 @@
 # Auto detect text files and perform LF normalization
 * text=auto
+
+# Research-result hashes attest exact bytes produced by the Windows research
+# runtime. Do not rewrite their line endings on Linux CI checkouts.
+outputs/portfolio/*.json -text

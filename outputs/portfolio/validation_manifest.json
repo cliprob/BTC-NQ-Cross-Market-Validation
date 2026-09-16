@@ -1,0 +1,501 @@
+{
+  "config_hash": "bb85578fd5a04dbaa574f80c6614f2b4b2cb42423e623c8e1e0f14417b8d2644",
+  "configuration": {
+    "costs": {
+      "commission_usd_per_side": 1.0,
+      "name": "MNQ_CONSERVATIVE",
+      "point_value_usd": 2.0,
+      "slippage_ticks_per_side": 1.0,
+      "tick_size_points": 0.25
+    },
+    "data": {
+      "analysis_timezone": "America/New_York",
+      "btc_path": "BTCUSDT_um-futures_1m_2024-03-07_to_2026-05-12.csv",
+      "nq_path": "NQ_stitched_1min_2024-03-07_to_2026-05-12.csv",
+      "nq_source_timezone": "America/Chicago"
+    },
+    "models": {
+      "logistic_c": 0.1,
+      "random_state": 42,
+      "rf_estimators": 300,
+      "rf_max_depth": 4,
+      "rf_min_samples_leaf": 20,
+      "threshold_grid": [
+        0.45,
+        0.5,
+        0.55,
+        0.6,
+        0.65,
+        0.7
+      ]
+    },
+    "output": {
+      "directory": "outputs/portfolio"
+    },
+    "research": {
+      "correlation_window": 55,
+      "entry_end": "15:30",
+      "hit_ratio_threshold": 0.6,
+      "horizon_minutes": 30,
+      "impulse_quantile": 0.7,
+      "min_test_trades": 50,
+      "min_validation_trades": 50,
+      "momentum_window": 15,
+      "purge_minutes": 60,
+      "session_end": "16:00",
+      "session_start": "09:30",
+      "spearman_threshold": 0.3,
+      "test_end": "2026-05-12 23:59:59",
+      "test_start": "2026-01-01 00:00:00",
+      "train_end": "2025-06-30 23:59:59",
+      "validation_end": "2025-12-31 23:59:59"
+    },
+    "version": 1
+  },
+  "data_range": {
+    "end": "2026-05-12 10:47:00-04:00",
+    "start": "2024-03-07 18:00:00-05:00"
+  },
+  "event_definition": {
+    "execution": "signal after t close; enter t+1 open; exit future open",
+    "horizon_minutes": 30,
+    "impulse_threshold_bps": 8.046194544073513,
+    "one_position_at_a_time": true,
+    "round_trip_cost_usd": 3.0
+  },
+  "feature_sets": {
+    "cross_market": [
+      "nq_mom_5_bps",
+      "nq_mom_15_bps",
+      "nq_mom_30_bps",
+      "nq_vol_15_bps",
+      "nq_vol_60_bps",
+      "nq_atr_14_bps",
+      "nq_rsi_14",
+      "hour_sin",
+      "hour_cos",
+      "btc_mom_5_bps",
+      "btc_mom_15_bps",
+      "btc_mom_30_bps",
+      "btc_vol_15_bps",
+      "btc_vol_60_bps",
+      "btc_nq_spearman_55",
+      "btc_nq_hit_55",
+      "momentum_spread_bps"
+    ],
+    "nq_only": [
+      "nq_mom_5_bps",
+      "nq_mom_15_bps",
+      "nq_mom_30_bps",
+      "nq_vol_15_bps",
+      "nq_vol_60_bps",
+      "nq_atr_14_bps",
+      "nq_rsi_14",
+      "hour_sin",
+      "hour_cos"
+    ]
+  },
+  "final_test": {
+    "end": "2026-05-12 23:59:59",
+    "evaluated": true,
+    "result_sha256": "c9ce293cde804d811de0675508e7bf045b39ecae567a8e8116119b0c6df2a198",
+    "start": "2026-01-01 00:00:00"
+  },
+  "locked_setting_hash": "ac32ede2a2acde76b7d856e8874dfe4f01da42f2738cfd6271e5321e359e75e6",
+  "schema_version": 1,
+  "source_hash": "1bebb62113f64418b1a7b2ce6df954376d6d4de4e8d0f9af04b2571c9de01a7e",
+  "trial_count": 20,
+  "validation": {
+    "models": {
+      "logreg_cross": {
+        "features": [
+          "nq_mom_5_bps",
+          "nq_mom_15_bps",
+          "nq_mom_30_bps",
+          "nq_vol_15_bps",
+          "nq_vol_60_bps",
+          "nq_atr_14_bps",
+          "nq_rsi_14",
+          "hour_sin",
+          "hour_cos",
+          "btc_mom_5_bps",
+          "btc_mom_15_bps",
+          "btc_mom_30_bps",
+          "btc_vol_15_bps",
+          "btc_vol_60_bps",
+          "btc_nq_spearman_55",
+          "btc_nq_hit_55",
+          "momentum_spread_bps"
+        ],
+        "importance": {
+          "btc_mom_15_bps": 0.01388104916388617,
+          "btc_mom_30_bps": -0.040170782978810826,
+          "btc_mom_5_bps": -0.028784129490598255,
+          "btc_nq_hit_55": 0.09910823635212444,
+          "btc_nq_spearman_55": -0.12325307548876459,
+          "btc_vol_15_bps": 0.054692650771599606,
+          "btc_vol_60_bps": -0.13921876661819738,
+          "hour_cos": 0.02615489562794405,
+          "hour_sin": 0.05687600305466571,
+          "momentum_spread_bps": 0.01079336984157774,
+          "nq_atr_14_bps": 0.13205731436009072,
+          "nq_mom_15_bps": 0.010320749194029432,
+          "nq_mom_30_bps": -0.004065071062238923,
+          "nq_mom_5_bps": 0.03467608295106221,
+          "nq_rsi_14": 0.10365729528855609,
+          "nq_vol_15_bps": -0.13588027496769337,
+          "nq_vol_60_bps": 0.10700585643987522
+        },
+        "probability_metrics": {
+          "brier_score": 0.2534591071835172,
+          "reliability": [
+            {
+              "bin": "(0.3, 0.4]",
+              "count": 39,
+              "observed": 0.46153846153846156,
+              "predicted": 0.3714387742607744
+            },
+            {
+              "bin": "(0.4, 0.5]",
+              "count": 1090,
+              "observed": 0.48073394495412847,
+              "predicted": 0.4649123266822317
+            },
+            {
+              "bin": "(0.5, 0.6]",
+              "count": 1255,
+              "observed": 0.47330677290836654,
+              "predicted": 0.5362809125921219
+            },
+            {
+              "bin": "(0.6, 0.7]",
+              "count": 100,
+              "observed": 0.56,
+              "predicted": 0.6269939490448114
+            },
+            {
+              "bin": "(0.7, 0.8]",
+              "count": 14,
+              "observed": 0.35714285714285715,
+              "predicted": 0.7350852483174545
+            },
+            {
+              "bin": "(0.8, 0.9]",
+              "count": 1,
+              "observed": 0.0,
+              "predicted": 0.8911563332100175
+            },
+            {
+              "bin": "(0.9, 1.0]",
+              "count": 1,
+              "observed": 1.0,
+              "predicted": 0.9620710344281544
+            }
+          ]
+        },
+        "selected_metrics": {
+          "daily_sharpe": -1.1378530964518494,
+          "deflated_sharpe_probability": 0.0014399735998138865,
+          "gross_usd": -1375.5,
+          "max_drawdown_usd": -18006.5,
+          "mean_net_bps": -0.8356118262909116,
+          "mean_net_usd": -3.633578995854445,
+          "mean_net_usd_ci_95": [
+            -9.334757721645618,
+            2.18972148541114
+          ],
+          "net_usd": -7888.5,
+          "profit_factor_capped": 0.9180194130362488,
+          "profit_factor_raw": 0.9180194130362488,
+          "trades": 2171,
+          "win_rate": 0.4818056195301704
+        },
+        "selection": {
+          "candidates": [
+            {
+              "mean_net_usd": -3.633578995854445,
+              "net_usd": -7888.5,
+              "threshold": 0.45,
+              "trades": 2171
+            },
+            {
+              "mean_net_usd": -6.389496717724289,
+              "net_usd": -8760.0,
+              "threshold": 0.5,
+              "trades": 1371
+            },
+            {
+              "mean_net_usd": -16.23191489361702,
+              "net_usd": -7629.0,
+              "threshold": 0.55,
+              "trades": 470
+            },
+            {
+              "mean_net_usd": -24.74137931034483,
+              "net_usd": -2870.0,
+              "threshold": 0.6,
+              "trades": 116
+            }
+          ],
+          "mean_net_usd": -3.633578995854445,
+          "net_usd": -7888.5,
+          "status": "selected",
+          "threshold": 0.45,
+          "trades": 2171
+        }
+      },
+      "logreg_nq": {
+        "features": [
+          "nq_mom_5_bps",
+          "nq_mom_15_bps",
+          "nq_mom_30_bps",
+          "nq_vol_15_bps",
+          "nq_vol_60_bps",
+          "nq_atr_14_bps",
+          "nq_rsi_14",
+          "hour_sin",
+          "hour_cos"
+        ],
+        "importance": {
+          "hour_cos": 0.03626518922463256,
+          "hour_sin": 0.06494547252752528,
+          "nq_atr_14_bps": 0.12114172161910644,
+          "nq_mom_15_bps": 0.014511258736968013,
+          "nq_mom_30_bps": -0.02127376456734297,
+          "nq_mom_5_bps": 0.027658634062737147,
+          "nq_rsi_14": 0.10224073906957461,
+          "nq_vol_15_bps": -0.11678005095423546,
+          "nq_vol_60_bps": 0.030269073689874824
+        },
+        "probability_metrics": {
+          "brier_score": 0.25149349885915656,
+          "reliability": [
+            {
+              "bin": "(0.3, 0.4]",
+              "count": 14,
+              "observed": 0.5,
+              "predicted": 0.39460480975166856
+            },
+            {
+              "bin": "(0.4, 0.5]",
+              "count": 1170,
+              "observed": 0.47094017094017093,
+              "predicted": 0.46809416244108704
+            },
+            {
+              "bin": "(0.5, 0.6]",
+              "count": 1272,
+              "observed": 0.4882075471698113,
+              "predicted": 0.5310141593085549
+            },
+            {
+              "bin": "(0.6, 0.7]",
+              "count": 43,
+              "observed": 0.4186046511627907,
+              "predicted": 0.6308107452832676
+            },
+            {
+              "bin": "(0.8, 0.9]",
+              "count": 1,
+              "observed": 1.0,
+              "predicted": 0.8331083761202207
+            }
+          ]
+        },
+        "selected_metrics": {
+          "daily_sharpe": -1.0827861115790984,
+          "deflated_sharpe_probability": 0.005443607690154161,
+          "gross_usd": -973.0,
+          "max_drawdown_usd": -18787.5,
+          "mean_net_bps": -0.7897925675239836,
+          "mean_net_usd": -3.4336007130124777,
+          "mean_net_usd_ci_95": [
+            -9.114618410074861,
+            2.1818012542338225
+          ],
+          "net_usd": -7705.0,
+          "profit_factor_capped": 0.9225628140703518,
+          "profit_factor_raw": 0.9225628140703518,
+          "trades": 2244,
+          "win_rate": 0.48083778966131907
+        },
+        "selection": {
+          "candidates": [
+            {
+              "mean_net_usd": -3.4336007130124777,
+              "net_usd": -7705.0,
+              "threshold": 0.45,
+              "trades": 2244
+            },
+            {
+              "mean_net_usd": -7.729863221884498,
+              "net_usd": -10172.5,
+              "threshold": 0.5,
+              "trades": 1316
+            },
+            {
+              "mean_net_usd": -8.069182389937106,
+              "net_usd": -2566.0,
+              "threshold": 0.55,
+              "trades": 318
+            }
+          ],
+          "mean_net_usd": -3.4336007130124777,
+          "net_usd": -7705.0,
+          "status": "selected",
+          "threshold": 0.45,
+          "trades": 2244
+        }
+      },
+      "random_forest_cross": {
+        "features": [
+          "nq_mom_5_bps",
+          "nq_mom_15_bps",
+          "nq_mom_30_bps",
+          "nq_vol_15_bps",
+          "nq_vol_60_bps",
+          "nq_atr_14_bps",
+          "nq_rsi_14",
+          "hour_sin",
+          "hour_cos",
+          "btc_mom_5_bps",
+          "btc_mom_15_bps",
+          "btc_mom_30_bps",
+          "btc_vol_15_bps",
+          "btc_vol_60_bps",
+          "btc_nq_spearman_55",
+          "btc_nq_hit_55",
+          "momentum_spread_bps"
+        ],
+        "importance": {
+          "btc_mom_15_bps": -0.0002352303709123216,
+          "btc_mom_30_bps": -0.00016821263959899136,
+          "btc_mom_5_bps": -9.054163541854398e-05,
+          "btc_nq_hit_55": 8.427615629191823e-07,
+          "btc_nq_spearman_55": 0.0001733244858580163,
+          "btc_vol_15_bps": 5.062372691021722e-05,
+          "btc_vol_60_bps": 2.7969336636586292e-05,
+          "hour_cos": 2.7241650643766728e-05,
+          "hour_sin": -6.27740947554989e-05,
+          "momentum_spread_bps": -0.0002742457612576943,
+          "nq_atr_14_bps": -8.930648507368132e-05,
+          "nq_mom_15_bps": -7.690024362911439e-05,
+          "nq_mom_30_bps": -0.0001353672195167921,
+          "nq_mom_5_bps": 0.00027460926580372586,
+          "nq_rsi_14": -0.00035918592559981536,
+          "nq_vol_15_bps": -0.00017658734761232588,
+          "nq_vol_60_bps": 0.00046404915016674326
+        },
+        "probability_metrics": {
+          "brier_score": 0.24985661339248144,
+          "reliability": [
+            {
+              "bin": "(0.3, 0.4]",
+              "count": 44,
+              "observed": 0.5,
+              "predicted": 0.38668479058639754
+            },
+            {
+              "bin": "(0.4, 0.5]",
+              "count": 1164,
+              "observed": 0.46134020618556704,
+              "predicted": 0.4622612570475836
+            },
+            {
+              "bin": "(0.5, 0.6]",
+              "count": 1261,
+              "observed": 0.4956383822363204,
+              "predicted": 0.5343461101525401
+            },
+            {
+              "bin": "(0.6, 0.7]",
+              "count": 31,
+              "observed": 0.45161290322580644,
+              "predicted": 0.6140277912319907
+            }
+          ]
+        },
+        "selected_metrics": {
+          "daily_sharpe": 0.5898926828199473,
+          "deflated_sharpe_probability": 0.13595646775200454,
+          "gross_usd": 2170.0,
+          "max_drawdown_usd": -2553.5,
+          "mean_net_bps": 0.8748423001611153,
+          "mean_net_usd": 3.095505617977528,
+          "mean_net_usd_ci_95": [
+            -7.8831435996097134,
+            13.996734550561793
+          ],
+          "net_usd": 1102.0,
+          "profit_factor_capped": 1.0707521427883535,
+          "profit_factor_raw": 1.0707521427883535,
+          "trades": 356,
+          "win_rate": 0.5196629213483146
+        },
+        "selection": {
+          "candidates": [
+            {
+              "mean_net_usd": -2.457971014492754,
+              "net_usd": -5088.0,
+              "threshold": 0.45,
+              "trades": 2070
+            },
+            {
+              "mean_net_usd": 1.1013931888544892,
+              "net_usd": 1423.0,
+              "threshold": 0.5,
+              "trades": 1292
+            },
+            {
+              "mean_net_usd": 3.095505617977528,
+              "net_usd": 1102.0,
+              "threshold": 0.55,
+              "trades": 356
+            }
+          ],
+          "mean_net_usd": 3.095505617977528,
+          "net_usd": 1102.0,
+          "status": "selected",
+          "threshold": 0.55,
+          "trades": 356
+        }
+      }
+    },
+    "strategies": {
+      "btc_nq_rule": {
+        "daily_sharpe": -0.8958769340206152,
+        "deflated_sharpe_probability": 0.15526113027042054,
+        "gross_usd": -622.0,
+        "max_drawdown_usd": -10095.0,
+        "mean_net_bps": -0.7643270805356299,
+        "mean_net_usd": -3.5240101095197978,
+        "mean_net_usd_ci_95": [
+          -11.080985250525913,
+          3.442704961357152
+        ],
+        "net_usd": -4183.0,
+        "profit_factor_capped": 0.9236706689536878,
+        "profit_factor_raw": 0.9236706689536878,
+        "trades": 1187,
+        "win_rate": 0.493681550126369
+      },
+      "nq_momentum_baseline": {
+        "daily_sharpe": -0.8650004267423526,
+        "deflated_sharpe_probability": 0.15322619691043743,
+        "gross_usd": 1130.5,
+        "max_drawdown_usd": -18450.0,
+        "mean_net_bps": -0.5674828177291481,
+        "mean_net_usd": -2.5478,
+        "mean_net_usd_ci_95": [
+          -7.804533706807269,
+          2.6963536390398586
+        ],
+        "net_usd": -6369.5,
+        "profit_factor_capped": 0.941166690528202,
+        "profit_factor_raw": 0.941166690528202,
+        "trades": 2500,
+        "win_rate": 0.4792
+      }
+    }
+  }
+}
