@@ -1,40 +1,85 @@
 \documentclass[10pt]{article}
-\usepackage[margin=0.72in]{geometry}
+\usepackage[margin=0.72in,headheight=19pt]{geometry}
 \usepackage[T1]{fontenc}
 \usepackage{lmodern}
 \usepackage{microtype}
 \usepackage{booktabs}
 \usepackage{tabularx}
+\usepackage{array}
 \usepackage{graphicx}
 \usepackage{xcolor}
 \usepackage{enumitem}
 \usepackage{hyperref}
-\hypersetup{colorlinks=true,linkcolor=black,urlcolor=blue!55!black}
+\usepackage{fancyhdr}
+\usepackage{tikz}
+\usepackage[most]{tcolorbox}
+\usepackage[font=small,labelfont=bf]{caption}
+
+\definecolor{navy}{HTML}{16324F}
+\definecolor{teal}{HTML}{2A7F9E}
+\definecolor{slate}{HTML}{5B6770}
+\definecolor{paper}{HTML}{F3F6F8}
+\definecolor{red}{HTML}{A23B3B}
+\definecolor{green}{HTML}{26734D}
+
+\hypersetup{colorlinks=true,linkcolor=navy,urlcolor=teal,citecolor=navy}
 \setlist{nosep,leftmargin=*}
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{4pt}
-\definecolor{accent}{HTML}{173F5F}
-\newcommand{\result}[1]{\textbf{\color{accent}#1}}
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
 
-\title{\vspace{-1.2cm}\textbf{BTC--Nasdaq Cross-Market Signal Validation}\\
-\large Leakage-aware event research with realistic MNQ execution}
-\author{Validation rebuild: Robert Mazurczak\\
-Original research: Robert Mazurczak and Alexandra Samuseva (\href{https://github.com/AlexSamuseva}{@AlexSamuseva})}
-\date{16 September 2026}
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\footnotesize\color{slate}BTC--NQ CROSS-MARKET VALIDATION}
+\rhead{\footnotesize\color{slate}RESEARCH NOTE \textbar{} SEPTEMBER 2026}
+\cfoot{\footnotesize\color{slate}\thepage}
+\renewcommand{\headrulewidth}{0.35pt}
+\renewcommand{\headrule}{\hbox to\headwidth{\color{paper}\leaders\hrule height \headrulewidth\hfill}}
+\fancypagestyle{plain}{
+  \fancyhf{}
+  \lhead{\footnotesize\color{slate}BTC--NQ CROSS-MARKET VALIDATION}
+  \rhead{\footnotesize\color{slate}RESEARCH NOTE \textbar{} SEPTEMBER 2026}
+  \cfoot{\footnotesize\color{slate}\thepage}
+  \renewcommand{\headrulewidth}{0.35pt}
+}
+
+\newcommand{\result}[1]{\textbf{\color{navy}#1}}
+\newcommand{\status}[1]{\textsc{\footnotesize #1}}
+\newtcolorbox{findingbox}{colback=paper,colframe=navy,boxrule=0.7pt,arc=1pt,left=7pt,right=7pt,top=6pt,bottom=6pt}
+\newtcolorbox{assumptionbox}{colback=paper,colframe=teal,boxrule=0.6pt,arc=1pt,left=7pt,right=7pt,top=5pt,bottom=5pt}
+\newtcolorbox{limitationbox}{colback=red!4,colframe=red!70,boxrule=0.6pt,arc=1pt,left=7pt,right=7pt,top=5pt,bottom=5pt}
 
 \begin{document}
-\maketitle
+
+\begingroup\raggedright
+{\small\color{teal}\textbf{QUANTITATIVE RESEARCH NOTE}\par}
+\vspace{-1pt}{\color{navy}\rule{\textwidth}{1.2pt}\par}
+\vspace{8pt}{\fontsize{22}{25}\selectfont\bfseries\color{navy}BTC--Nasdaq Cross-Market Signal Validation\par}
+\vspace{4pt}{\large\color{slate}Leakage-aware event research with realistic MNQ execution\par}
+\vspace{12pt}
+\endgroup
+
+\begin{tabularx}{\textwidth}{@{}Y Y@{}}
+\textbf{Validation rebuild}\newline Robert Mazurczak &
+\textbf{Original coursework and research}\newline Robert Mazurczak and Alexandra Samuseva
+\end{tabularx}
+\vspace{6pt}
+{\small\color{slate}16 September 2026 \quad\textbar\quad Final test: 1 January--12 May 2026}
 
 \begin{abstract}
-This study asks a narrow question: \emph{do BTC-derived features improve prediction of Nasdaq futures event returns over a comparable NQ-only momentum baseline after costs?} We rebuild an earlier notebook backtest as a causal event pipeline. Features are known at the close of minute $t$, execution occurs at the open of $t+1$, positions do not overlap, contract rolls and discontinuities are excluded, and all model choices are made from purged expanding walk-forward predictions. The period 1 January--12 May 2026 is opened only after the configuration and source hashes are locked. The final test contains 824 candidate events. The BTC--NQ rule and Random Forest have positive point estimates, but their 95\% block-bootstrap confidence intervals include zero. The NQ-only baseline and NQ-only Logistic Regression are net negative. \result{The prespecified positive-edge criterion is not met.} The useful result is a reproducible model-validation case study, not a claim of a deployable trading strategy.
+\noindent This study asks whether BTC-derived variables improve prediction of Nasdaq futures event returns over a comparable NQ-only momentum baseline after realistic costs. The earlier notebook work is rebuilt as a causal event pipeline: features are known at minute $t$ close, execution occurs at the next open, positions do not overlap, discontinuities are rejected, and model choices are made from purged expanding walk-forward predictions. The locked final test contains 824 candidate events. The BTC--NQ rule and Random Forest have positive point estimates, but every 95\% block-bootstrap interval crosses zero. The useful result is a reproducible model-validation study, not a claim of deployable alpha.
 \end{abstract}
 
-\section*{Research question and decision rule}
-The candidate universe consists of large 15-minute NQ momentum impulses during the US cash session. Four levels are compared: an NQ momentum baseline, a BTC--NQ agreement rule, Logistic Regression, and a constrained Random Forest. A separate NQ-only Logistic Regression is retained as an ablation: it directly measures whether BTC variables add predictive value.
+\begin{findingbox}
+\textbf{Executive finding.} \result{The prespecified positive-edge criterion is not met.} BTC variables produce an interesting positive rule-based estimate, but uncertainty remains large and the cross-market Logistic Regression does not materially improve upon its NQ-only ablation.
+\end{findingbox}
 
-A positive edge may be declared only when the locked final test has at least 50 trades, positive net P\&L, and a positive lower bound for a 95\% day-block bootstrap confidence interval of mean net P\&L. Profit factor is capped for reporting and cannot override the minimum sample rule. Under this decision rule, no evaluated strategy supports a positive-edge claim.
+\section{Research question and decision rule}
+The candidate universe consists of large 15-minute NQ momentum impulses during the US cash session. Four levels are compared: an NQ momentum baseline, a BTC--NQ agreement rule, Logistic Regression, and a constrained Random Forest. The separate NQ-only Logistic Regression is the principal ablation for incremental BTC information.
 
-\begin{table}[h]
+A positive edge may be declared only when the locked final test has at least 50 accepted trades, positive net P\&L, and a positive lower bound for a 95\% day-block bootstrap confidence interval of mean net P\&L. Profit factor is capped for reporting and cannot override the minimum-sample rule.
+
+\begin{table}[ht]
 \centering
 \small
 \begin{tabular}{lrrrrl}
@@ -52,99 +97,170 @@ Random Forest, cross-market & 55 & 1,795.00 & 1,630.00 & 29.64 & [-20.83, 79.09]
 \end{table}
 
 \newpage
+\thispagestyle{fancy}
 \section{Audit of the legacy backtest}
-The original notebooks were useful exploratory work, but their headline metrics cannot be interpreted as executable performance. They are preserved under \texttt{legacy/} for attribution and auditability; they are explicitly not a source of truth.
+The original notebooks were useful exploratory work, but their headline metrics cannot be interpreted as executable performance. They remain under \texttt{legacy/} for attribution and auditability and are not a source of truth.
 
 \subsection*{Material failure modes}
 \begin{itemize}
-  \item \textbf{Costs dominated the apparent edge.} One notebook reported 14,554 NQ points from 258,207 trades, only 0.056 point per trade. The later ML notebook reported 1,599 points from 21,188 trades, 0.075 point per trade. Both averages are below a single MNQ tick of 0.25 point before commission.
-  \item \textbf{Overlapping candidate returns were summed.} A sequence of neighboring signal bars could contribute several labels that represented the same market move, inflating sample size and invalidating P\&L aggregation.
-  \item \textbf{Execution used information unavailable at the fill.} Filling at a close that was required to compute the signal creates look-ahead execution. The rebuilt engine enters at the next bar's open.
-  \item \textbf{Time handling was not exchange-safe.} A fixed UTC offset cannot represent US daylight-saving transitions. The rebuild localizes NQ source timestamps to \texttt{America/Chicago}, converts through UTC, and evaluates the session in \texttt{America/New\_York} using CME Equity trading dates.
-  \item \textbf{Contract changes and missing bars were not guarded.} Events that cross a roll, timestamp gap, day boundary, or session end are now rejected.
-  \item \textbf{Selection and evaluation were mixed.} Thresholds and models were compared on the final period, and some rolling experiments learned from labels inside that period. The rebuild permits selection only from out-of-fold pre-2026 predictions.
-  \item \textbf{Sharpe annualization was inconsistent.} Per-trade observations and a hard-coded two-year factor were mixed. The maintained report uses daily net P\&L and $\sqrt{252}$, while also showing bootstrap uncertainty.
+  \item \textbf{Costs dominated the apparent edge.} One notebook reported 14,554 NQ points from 258,207 trades, only 0.056 point per trade. A later ML notebook reported 0.075 point per trade. Both averages are below one 0.25-point MNQ tick before commission.
+  \item \textbf{Overlapping returns were summed.} Neighboring signal bars could represent the same market move, inflating sample size and making aggregate P\&L invalid.
+  \item \textbf{Execution used unavailable information.} A close required to form the signal was also used as the fill. The maintained engine enters at the next bar's open.
+  \item \textbf{Time and contract handling were unsafe.} Fixed UTC offsets ignored daylight-saving transitions, while rolls and missing bars were not consistently excluded.
+  \item \textbf{Selection and evaluation were mixed.} Thresholds and winners could be chosen with final-period information. The rebuild uses pre-2026 OOF predictions for selection and locks the final configuration.
+  \item \textbf{Sharpe annualization and ranking were unstable.} Per-trade observations were annualized incorrectly, and an infinite profit factor could elevate configurations with one to three validation trades.
 \end{itemize}
 
-An intermediate replay also revealed a ranking defect: configurations with \texttt{profit\_factor = inf} could receive an infinite robustness score despite only one to three validation trades. This rebuild makes 50 validation trades a hard feasibility constraint; the capped profit factor is descriptive only.
+\begin{limitationbox}
+\textbf{Legacy evidence.} Historical searches included alternative windows, horizons, filters, and exits. They explain where several research choices originated, but they do not provide clean confirmatory evidence because the search process was broad and the old backtest mechanics were flawed.
+\end{limitationbox}
 
 \section{Data and economic assumptions}
-BTCUSDT USD-M one-minute bars are public Binance data. NQ one-minute bars are a local IBKR-derived, stitched contract series and are not redistributed. The repository contains a schema, a Binance downloader, and synthetic fixtures instead of proprietary data.
+BTCUSDT USD-M one-minute bars are public Binance data. NQ one-minute bars are a local IBKR-derived stitched contract series and are not redistributed. The repository supplies a schema, Binance downloader, and synthetic test fixtures instead of proprietary data.
 
-MNQ economics use the official contract multiplier of \$2 times the index, a 0.25-point minimum tick, and a \$0.50 tick value. See the \href{https://www.cmegroup.com/markets/equities/nasdaq/micro-e-mini-nasdaq-100.html}{CME product page}. The locked conservative scenario assumes one tick of slippage per side and \$1 commission per side, giving a \$3.00 round trip. Broker commissions remain configurable and should be checked against the current \href{https://www.interactivebrokers.com/en/pricing/commissions-futures.php}{IBKR futures schedule}.
+MNQ economics use the official multiplier of \$2 times the index, a 0.25-point minimum tick, and a \$0.50 tick value; see the \href{https://www.cmegroup.com/markets/equities/nasdaq/micro-e-mini-nasdaq-100.html}{CME product page}. The locked conservative scenario assumes one tick of slippage and \$1 commission per side, giving a \$3.00 round trip. Fees remain configurable and should be checked against the current \href{https://www.interactivebrokers.com/en/pricing/commissions-futures.php}{IBKR futures schedule}.
 
 \newpage
+\thispagestyle{fancy}
 \section{Causal event protocol}
-At minute $t$, all features are calculated from bars whose closes are available no later than $t$. An event is the first bar on which the absolute 15-minute NQ return crosses a training-fitted 70th-percentile threshold (8.1193 bps). The direction is the sign of that return. Entry is the open of $t+1$; exit is the open 30 minutes after entry. A global cooldown enforces one open position at a time.
+At minute $t$, every feature uses bars available no later than that bar's close. An event is the first bar on which the absolute 15-minute NQ return crosses the training-fitted 70th-percentile threshold (8.0462 bps). Direction is the sign of that return. Entry is the open of $t+1$; exit is the open 30 minutes after entry. A global cooldown permits one open position at a time.
 
-An event is discarded if any required feature is missing, any one-minute timestamp is absent, the NQ contract identifier changes, entry and exit do not share a session date, or the exit is later than 16:00 New York time. This turns the research unit from a highly overlapping bar into a trade-like event with a uniquely attributable outcome.
+\begin{figure}[ht]
+\centering
+\begin{tikzpicture}[>=stealth,thick,font=\small]
+  \draw[->,color=slate] (0,0) -- (12.5,0);
+  \draw[color=teal,line width=2pt] (0.7,0.65) -- (5.8,0.65);
+  \draw[color=navy,line width=2pt] (4.3,1.15) -- (5.8,1.15);
+  \node[anchor=south,color=teal] at (3.25,0.72) {55-minute BTC--NQ coherence window};
+  \node[anchor=south,color=navy] at (5.05,1.22) {15-minute NQ impulse};
+  \foreach \x in {0.7,4.3,5.8,7.8,11.7} {
+    \draw[color=slate] (\x,-0.13) -- (\x,0.13);
+  }
+  \node[anchor=north,color=slate] at (0.7,-0.18) {$t-55$};
+  \node[anchor=north,color=slate] at (4.3,-0.18) {$t-15$};
+  \node[anchor=north,align=center,color=navy] at (5.8,-0.18) {$t$ close\\\scriptsize SIGNAL FORMED};
+  \node[anchor=north,align=center,color=teal] at (7.8,-0.18) {$t+1$ open\\\scriptsize ENTRY};
+  \node[anchor=north,align=center,color=slate] at (11.7,-0.18) {$t+31$ open\\\scriptsize EXIT};
+  \draw[<->,color=teal] (7.8,-0.82) -- node[midway,below]{\scriptsize 30-MINUTE HOLD} (11.7,-0.82);
+\end{tikzpicture}
+\caption{Causal timing. The signal close is never used as the execution price.}
+\end{figure}
 
-\subsection*{Feature sets}
-The NQ-only set contains 5/15/30-minute momentum, 15/60-minute volatility, 14-minute ATR, RSI, and cyclical time-of-day features. The cross-market set adds BTC momentum and volatility, exact rolling 55-minute Spearman correlation, a 55-minute directional hit ratio, and the BTC-minus-NQ momentum spread. All rolling state resets after data or contract discontinuities.
+Events are rejected when a required feature is missing, a one-minute timestamp is absent, the NQ contract identifier changes, entry and exit do not share a session date, or exit would occur after 16:00 New York time.
 
-\subsection*{Labels and costs}
-For the event direction $d \in \{-1,1\}$, gross points are
+\subsection*{Feature sets and labels}
+The NQ-only set contains 5/15/30-minute momentum, 15/60-minute volatility, 14-minute ATR, RSI, and cyclical time features. The cross-market set adds BTC momentum and volatility, exact rolling 55-minute Spearman correlation, a 55-minute directional hit ratio, and the BTC-minus-NQ momentum spread. For direction $d_i \in \{-1,1\}$,
 \[
-  \mathrm{points}_i = d_i(P^{\mathrm{exit}}_i-P^{\mathrm{entry}}_i).
+  \mathrm{points}_i=d_i(P^{\mathrm{exit}}_i-P^{\mathrm{entry}}_i).
 \]
-Gross USD equals points times \$2. Net USD subtracts the full round-trip cost. The binary label is one only when net USD is positive. This makes the classifier answer a tradable question---whether the already-defined directional event clears costs---rather than predicting an arbitrary next-bar sign.
+Gross USD equals points times \$2; net USD subtracts the round-trip cost. The label is one only when net USD is positive.
+
+\begin{assumptionbox}
+\textbf{Interpretation.} The maintained experiment tests whether BTC features improve selection of a predefined NQ momentum event. It does not establish a structural BTC-to-NQ causal channel, and it does not directly test a dynamic exit after correlation decay.
+\end{assumptionbox}
+
+\newpage
+\thispagestyle{fancy}
+\section{Research specification and parameter provenance}
+Not every number has the same epistemic status. Market mechanics are imposed by execution; train-fitted quantities are estimated without final-test observations; frozen heuristics encode the historical hypothesis and remain potential sources of specification risk.
+
+\begin{table}[ht]
+\centering
+\footnotesize
+\begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}p{0.18\textwidth}>{\raggedright\arraybackslash}p{0.17\textwidth}Y@{}}
+\toprule
+Parameter & Status & Rationale and limitation \\
+\midrule
+15-minute NQ momentum & \status{Frozen heuristic} & Short-horizon impulse definition inherited from legacy 15/30-minute experiments. It is interpretable, but the maintained pipeline does not prove 15 minutes is optimal. \\
+70th percentile impulse & \status{Train-fitted} & Defines an above-typical move while retaining an analyzable event count. The numerical threshold is fitted before validation; the percentile itself is a frozen design choice. \\
+55-minute coherence & \status{Frozen heuristic} & Inherited from prior research that compared 55- and 90-minute windows. It balances recency and sample size but has no unique theoretical claim. \\
+Spearman $\geq 0.30$ & \status{Frozen heuristic} & A pragmatic moderate-positive-association cutoff, fixed before final evaluation. It is not an estimated economic boundary. \\
+Hit ratio $\geq 0.60$ & \status{Frozen heuristic} & Requires same-sign one-minute moves in a clear majority of the window. It is not statistically identified as an optimal cutoff. \\
+30-minute fixed hold & \status{Frozen heuristic} & Represents short-lived continuation and came from earlier horizon exploration. It is a benchmark, not a validated optimal exit. \\
+Minimum 50 trades & \status{Research guardrail} & Prevents claims based on extremely small accepted samples. It is not a substitute for a formal power calculation. \\
+60-minute purge & \status{Validation control} & Exceeds the 30-minute label horizon and separates training outcomes from the next fold boundary. \\
+Next-open fills, session and rolls & \status{Market mechanics} & Enforce causal execution and exclude paths that are not comparable because of closure, discontinuity, or contract change. \\
+\bottomrule
+\end{tabularx}
+\caption{Parameter provenance. ``Frozen'' means fixed before the locked final test, not theoretically optimal.}
+\end{table}
+
+\begin{limitationbox}
+\textbf{No hidden sensitivity claim.} The clean pipeline did not rerun a comprehensive 30/55/90-minute window study or optimize the 0.30/0.60 rule. Legacy comparisons are provenance, not validation. A new sensitivity study must be versioned as a new hypothesis and evaluated on new untouched data.
+\end{limitationbox}
 
 \section{Walk-forward validation and model controls}
-Expanding quarterly folds begin in 2024Q4. Each training sample must precede the validation boundary by the configured 60-minute purge, which exceeds the maximum 30-minute holding horizon. Standardization is fitted inside each Logistic Regression fold. Random Forest permutation importance and Logistic Regression coefficients are aggregated from fold-local estimators; no final-test observation participates.
+Expanding quarterly folds begin in 2024Q4. Training observations precede validation by the configured purge. Scaling is fitted inside each Logistic Regression fold. Random Forest permutation importance and Logistic Regression coefficients come from fold-local estimators; final-test observations do not participate.
 
-The Logistic Regression regularization and constrained Random Forest depth/leaf size are fixed in configuration. Probability thresholds in \{0.45, 0.50, 0.55, 0.60, 0.65, 0.70\} are ranked using OOF events only and must retain at least 50 trades. The trial ledger records all feasible comparisons; the manifest reports 20 research trials. Selection-bias context follows Bailey and L\'opez de Prado's \href{https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2460551}{Deflated Sharpe Ratio} and \href{https://papers.ssrn.com/sol3/Papers.cfm?abstract_id=2326253}{Probability of Backtest Overfitting}. The reported DSR is an explicitly approximate diagnostic, not a p-value.
+Probability thresholds in \{0.45, 0.50, 0.55, 0.60, 0.65, 0.70\} are ranked using OOF events only and must retain at least 50 trades. The ledger records every feasible comparison and the manifest reports 20 trials. Selection-bias context follows the \href{https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2460551}{Deflated Sharpe Ratio} and \href{https://papers.ssrn.com/sol3/Papers.cfm?abstract_id=2326253}{Probability of Backtest Overfitting} literature. Reported DSR values are approximate diagnostics, not p-values.
 
 \newpage
+\thispagestyle{fancy}
 \section{Validation evidence}
-The OOF NQ baseline lost \$6,369.50 over 2,500 events; the BTC--NQ rule lost \$4,183 over 1,187 events. Both Logistic Regression selections were negative after costs. The Random Forest chose a 0.55 threshold and earned \$1,102 over 356 validation trades, but its mean-net 95\% CI was [-\$7.88, \$14.00]. Thus, even the selected model did not establish a stable validation edge.
+The OOF NQ baseline lost \$6,369.50 over 2,500 events; the BTC--NQ rule lost \$4,183 over 1,187 events. Both Logistic Regression selections were negative after costs. The Random Forest earned \$1,102 over 356 selected validation trades, but its mean-net 95\% interval was [-\$7.88, \$14.00]. No selected model established a stable validation edge.
 
-\begin{figure}[h]
+\begin{figure}[ht]
 \centering
-\includegraphics[width=0.84\textwidth]{../outputs/portfolio/reliability_oof.png}
-\caption{Out-of-fold reliability. Brier scores were 0.2515 (NQ LogReg), 0.2535 (cross-market LogReg), and 0.2499 (cross-market RF), close to an uninformative balanced forecast.}
+\includegraphics[width=0.82\textwidth]{figures/reliability_oof_journal.png}
+\caption{Out-of-fold reliability using bins with at least ten observations. Predictions cluster near 0.5 and do not demonstrate strong discrimination.}
 \end{figure}
 
-The cross-market Logistic Regression did not improve calibration over the NQ-only ablation. Coefficient and permutation-importance magnitudes are included in the machine-readable manifest rather than interpreted causally: correlated rolling variables, non-stationarity, and low signal-to-noise make such interpretations fragile.
+The NQ-only and cross-market Logistic Regression Brier scores are 0.2515 and 0.2535 respectively; the constrained Random Forest score is 0.2499. Cross-market Logistic Regression therefore does not show incremental calibration value over the NQ-only ablation. Coefficients and permutation importance remain predictive diagnostics, not causal estimates.
 
 \subsection*{Locked research state}
-The versioned manifest stores sanitized configuration, data range, event threshold, feature lists, OOF threshold selections, trial count, a SHA-256 hash of the maintained package, and a hash of the locked setting. The final command refuses a changed configuration or source tree and refuses a second final evaluation unless an explicit override is supplied. The published final result hash is retained in the manifest.
+The manifest stores the sanitized configuration, data range, event threshold, feature lists, OOF selections, trial count, maintained-package SHA-256, and locked-setting hash. The final command rejects a changed configuration or source tree and refuses a second final evaluation without an explicit auditing override.
 
-\newpage
-\section{Final test}
-The final interval produced 824 eligible events. Figure~\ref{fig:final} shows mean net USD per accepted trade. Positive bars are point estimates, not evidence of a positive population mean.
+\section{Locked final test}
+The final interval produced 824 eligible events. Figure~\ref{fig:forest} reports point estimates together with their uncertainty; this presentation deliberately avoids treating positive bars as evidence of positive population means.
 
-\begin{figure}[h]
+\begin{figure}[ht]
 \centering
-\includegraphics[width=0.88\textwidth]{../outputs/portfolio/final_test_snapshot.png}
-\caption{Locked final-test mean net P\&L per trade. All strategy confidence intervals include zero.}
-\label{fig:final}
+\includegraphics[width=0.93\textwidth]{figures/final_test_forest.png}
+\caption{Mean net P\&L and 95\% day-block bootstrap intervals. Every interval includes zero.}
+\label{fig:forest}
 \end{figure}
 
-\section{Interpretation, drift, and limitations}
-The BTC--NQ rule and cross-market Random Forest are directionally interesting, but neither passes the uncertainty gate. The Random Forest result is particularly fragile: 55 trades barely clear the minimum and its confidence interval is very wide. The cross-market Logistic Regression adds no practical value over its NQ-only ablation. The correct conclusion is \result{no validated positive edge}; the positive estimates remain inconclusive follow-up hypotheses.
+\newpage
+\thispagestyle{fancy}
+\section{Does the hypothesis have potential?}
+There is a narrow reason to continue studying the question, but not to trade the result. The BTC--NQ agreement rule earns a positive final-test point estimate of \$7.02 per trade over 413 trades. Its 95\% interval, [-\$5.35, \$19.49], still admits both a meaningful loss and a useful gain. That is an unresolved estimate, not confirmed alpha.
 
-Population Stability Index diagnostics do not show an obvious catastrophic covariate shift. The largest final-versus-pretest PSI was 0.11 for rolling BTC--NQ Spearman correlation, followed by 0.06 for directional hit ratio and 0.05 for NQ 60-minute volatility. These diagnostics are descriptive: a low PSI cannot establish label stability or model correctness.
+The cross-market Logistic Regression does not materially outperform its NQ-only ablation, which weakens a general claim that the chosen BTC feature set adds predictive information. The Random Forest estimate is positive but rests on only 55 accepted trades and has a very wide interval. Together, these results support a follow-up hypothesis about conditional dependence, not deployment.
 
-\subsection*{Limitations}
+\begin{findingbox}
+\textbf{Balanced conclusion.} The point estimate of the interpretable BTC--NQ rule is economically interesting enough to motivate new research. The validation and uncertainty evidence is not strong enough to claim robust after-cost predictability.
+\end{findingbox}
+
+\section{Limitations}
 \begin{itemize}
-  \item The study uses one stitched NQ data source and cannot independently verify vendor corrections, roll construction, or bid/ask history.
-  \item Slippage is a configurable fixed scenario, not a market-impact model; latency, queue position, spread variation, partial fills, and exchange fees are simplified.
-  \item The event family and feature family reflect prior exploration. Trial counting and approximate DSR make that risk visible but cannot fully reconstruct every human research decision.
-  \item The final interval covers roughly four months. Day-block bootstrap preserves same-day dependence but cannot create unobserved regimes.
-  \item Classification calibration near 0.5 is weak. Feature importance is predictive and fold-specific, not structural or causal evidence linking BTC to NQ.
+  \item One stitched NQ source cannot independently verify vendor corrections, roll construction, or historical bid/ask conditions.
+  \item Fixed slippage simplifies spread variation, latency, queue position, partial fills, market impact, and exchange fees.
+  \item The event and feature families reflect prior human exploration. Trial logging and approximate DSR expose but cannot reconstruct all selection decisions.
+  \item The final interval spans roughly four months. Day-block bootstrap preserves within-day dependence but cannot generate unobserved regimes.
+  \item The 30-minute exit and 55-minute coherence window are design choices. The present result cannot distinguish a weak hypothesis from a poorly chosen horizon.
+  \item Feature importance is fold-specific and predictive, not evidence of a structural or causal BTC-to-NQ transmission mechanism.
 \end{itemize}
 
+\newpage
+\thispagestyle{fancy}
+\section{Pre-specified future research}
+A follow-up should be treated as a new study rather than an extension of the locked test:
+\begin{enumerate}
+  \item Compare 30/55/90-minute coherence windows and report the entire sensitivity surface rather than its winner.
+  \item Test a dynamic exit that closes after the entry coherence condition decays, with next-open execution and a fixed maximum hold.
+  \item Estimate whether standardized BTC or NQ impulse magnitude has a monotonic relationship with subsequent NQ returns.
+  \item Report long and short events separately to distinguish cross-market information from directional equity beta.
+  \item Freeze the new specification before collecting or opening a new untouched evaluation period.
+\end{enumerate}
+
 \section{Reproducibility and conclusion}
-The maintained interface is:
 \begin{verbatim}
 python -m cross_market.run --config configs/research.yaml --stage validation
 python -m cross_market.run --config configs/research.yaml --stage final
 \end{verbatim}
-The first command creates OOF diagnostics and the lock; the second verifies the lock before opening the final period. CI runs lint, formatting, type checks, unit/integration tests, a notebook smoke test, and committed-artifact checks. Public data may be downloaded; the local NQ file must conform to the documented schema.
-
-The project demonstrates a defensible research outcome even without alpha: causal timing, event construction, realistic contract costs, purged walk-forward model selection, probabilistic calibration, drift analysis, selection-bias awareness, and an immutable final-test audit trail. The hypothesis that BTC features create a robust after-cost NQ edge is not established by this sample. Any follow-up must begin as a new, versioned hypothesis with a new untouched evaluation period.
+The project demonstrates causal timing, event construction, futures cost accounting, purged walk-forward selection, calibration, drift diagnostics, and an immutable final-test audit trail. \result{The hypothesis that the current BTC features create a robust after-cost NQ edge is not established by this sample.}
 
 \vfill
-\footnotesize\textbf{Artifact identity.} Locked setting hash: \texttt{ac32ede2a2acde76b7d856e8874dfe4f01da42f2738cfd6271e5321e359e75e6}. Final result SHA-256: \texttt{c9ce293cde804d811de0675508e7bf045b39ecae567a8e8116119b0c6df2a198}.
+\footnotesize\color{slate}\textbf{Artifact identity.} Locked setting hash: \texttt{ac32ede2a2acde76b7d856e8874dfe4f01da42f2738cfd6271e5321e359e75e6}. Final result SHA-256: \texttt{c9ce293cde804d811de0675508e7bf045b39ecae567a8e8116119b0c6df2a198}.
 
 \end{document}
