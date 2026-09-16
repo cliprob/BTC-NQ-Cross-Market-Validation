@@ -52,3 +52,10 @@ check_untyped_defs = true
 ignore_missing_imports = true
 disable_error_code = ["import-untyped"]
 exclude = ["legacy", "archive", "research"]
+
+[[tool.mypy.overrides]]
+# numpy.flatnonzero yields a platform-sized integer scalar; runtime conversion
+# is lossless for positional frame indices, but NumPy's Linux stubs do not
+# narrow it to builtins.int.
+module = "cross_market.events"
+disable_error_code = ["arg-type", "assignment"]
