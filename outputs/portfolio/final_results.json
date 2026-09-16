@@ -1,0 +1,192 @@
+{
+  "candidate_events": 824,
+  "conclusion": "No strategy may be described as a positive edge unless its verdict is positive_edge_supported.",
+  "feature_drift_psi": {
+    "btc_mom_15_bps": 0.010508334266829771,
+    "btc_mom_30_bps": 0.007494798054586909,
+    "btc_mom_5_bps": 0.010995642733100728,
+    "btc_nq_hit_55": 0.06426594421505487,
+    "btc_nq_spearman_55": 0.10509520913493217,
+    "btc_vol_15_bps": 0.019841145631776344,
+    "btc_vol_60_bps": 0.020394727693576722,
+    "hour_cos": 0.012454804417321943,
+    "hour_sin": 0.011759227002649579,
+    "momentum_spread_bps": 0.00995347416832211,
+    "nq_atr_14_bps": 0.04227655123618525,
+    "nq_mom_15_bps": 0.02461357239160341,
+    "nq_mom_30_bps": 0.024762903564502843,
+    "nq_mom_5_bps": 0.016412909194075353,
+    "nq_rsi_14": 0.005619932322011004,
+    "nq_vol_15_bps": 0.024108159810424853,
+    "nq_vol_60_bps": 0.04784403165749413
+  },
+  "locked_setting_hash": "ac32ede2a2acde76b7d856e8874dfe4f01da42f2738cfd6271e5321e359e75e6",
+  "probability_metrics": {
+    "logreg_cross": {
+      "brier_score": 0.2474266587895134,
+      "reliability": [
+        {
+          "bin": "(0.3, 0.4]",
+          "count": 5,
+          "observed": 0.4,
+          "predicted": 0.3934134243092883
+        },
+        {
+          "bin": "(0.4, 0.5]",
+          "count": 480,
+          "observed": 0.44166666666666665,
+          "predicted": 0.47123162892381043
+        },
+        {
+          "bin": "(0.5, 0.6]",
+          "count": 333,
+          "observed": 0.5435435435435435,
+          "predicted": 0.5283966410972705
+        },
+        {
+          "bin": "(0.6, 0.7]",
+          "count": 6,
+          "observed": 0.5,
+          "predicted": 0.60547175692552
+        }
+      ]
+    },
+    "logreg_nq": {
+      "brier_score": 0.24810343515854347,
+      "reliability": [
+        {
+          "bin": "(0.4, 0.5]",
+          "count": 465,
+          "observed": 0.44516129032258067,
+          "predicted": 0.4753800218555903
+        },
+        {
+          "bin": "(0.5, 0.6]",
+          "count": 357,
+          "observed": 0.5350140056022409,
+          "predicted": 0.527182673848664
+        },
+        {
+          "bin": "(0.6, 0.7]",
+          "count": 2,
+          "observed": 0.0,
+          "predicted": 0.6055323449557886
+        }
+      ]
+    },
+    "random_forest_cross": {
+      "brier_score": 0.24936350084877706,
+      "reliability": [
+        {
+          "bin": "(0.4, 0.5]",
+          "count": 363,
+          "observed": 0.4628099173553719,
+          "predicted": 0.4737658877977454
+        },
+        {
+          "bin": "(0.5, 0.6]",
+          "count": 461,
+          "observed": 0.49891540130151846,
+          "predicted": 0.525161307764878
+        }
+      ]
+    }
+  },
+  "schema_version": 1,
+  "strategies": {
+    "btc_nq_rule": {
+      "daily_sharpe": 1.8152088343085266,
+      "deflated_sharpe_probability": 0.2799522647042494,
+      "gross_usd": 4136.5,
+      "max_drawdown_usd": -1836.0,
+      "mean_net_bps": 1.4447597612225926,
+      "mean_net_usd": 7.0157384987893465,
+      "mean_net_usd_ci_95": [
+        -5.346284310173023,
+        19.491388683260833
+      ],
+      "net_usd": 2897.5,
+      "profit_factor_capped": 1.1514517941614615,
+      "profit_factor_raw": 1.1514517941614615,
+      "trades": 413,
+      "verdict": "hypothesis_rejected",
+      "win_rate": 0.5205811138014528
+    },
+    "logreg_cross": {
+      "daily_sharpe": 0.17698146369685822,
+      "deflated_sharpe_probability": 0.06228594222494048,
+      "gross_usd": 2610.5,
+      "max_drawdown_usd": -4099.5,
+      "mean_net_bps": 0.12692984443591968,
+      "mean_net_usd": 0.5181940700808625,
+      "mean_net_usd_ci_95": [
+        -8.544003678335871,
+        10.131424193329094
+      ],
+      "net_usd": 384.5,
+      "profit_factor_capped": 1.0107116490925045,
+      "profit_factor_raw": 1.0107116490925045,
+      "trades": 742,
+      "verdict": "hypothesis_rejected",
+      "win_rate": 0.48921832884097033
+    },
+    "logreg_nq": {
+      "daily_sharpe": -0.28406650143653417,
+      "deflated_sharpe_probability": 0.03623509438320134,
+      "gross_usd": 1782.5,
+      "max_drawdown_usd": -5094.0,
+      "mean_net_bps": -0.133923262440234,
+      "mean_net_usd": -0.7801992528019925,
+      "mean_net_usd_ci_95": [
+        -9.205716080402011,
+        8.04831738170234
+      ],
+      "net_usd": -626.5,
+      "profit_factor_capped": 0.983883000617411,
+      "profit_factor_raw": 0.983883000617411,
+      "trades": 803,
+      "verdict": "hypothesis_rejected",
+      "win_rate": 0.48318804483188044
+    },
+    "nq_momentum_baseline": {
+      "daily_sharpe": -0.1434534865644262,
+      "deflated_sharpe_probability": 0.0429652781019423,
+      "gross_usd": 2149.5,
+      "max_drawdown_usd": -4847.5,
+      "mean_net_bps": -0.058393982169654565,
+      "mean_net_usd": -0.3913834951456311,
+      "mean_net_usd_ci_95": [
+        -8.620938355265487,
+        8.490345589087115
+      ],
+      "net_usd": -322.5,
+      "profit_factor_capped": 0.991884852983732,
+      "profit_factor_raw": 0.991884852983732,
+      "trades": 824,
+      "verdict": "hypothesis_rejected",
+      "win_rate": 0.4830097087378641
+    },
+    "random_forest_cross": {
+      "daily_sharpe": 2.740300746741731,
+      "deflated_sharpe_probability": 0.289357060149839,
+      "gross_usd": 1795.0,
+      "max_drawdown_usd": -881.0,
+      "mean_net_bps": 5.9345144005472665,
+      "mean_net_usd": 29.636363636363637,
+      "mean_net_usd_ci_95": [
+        -20.834767025089604,
+        79.08597450822963
+      ],
+      "net_usd": 1630.0,
+      "profit_factor_capped": 1.52956465237167,
+      "profit_factor_raw": 1.52956465237167,
+      "trades": 55,
+      "verdict": "hypothesis_rejected",
+      "win_rate": 0.5272727272727272
+    }
+  },
+  "test_period": {
+    "end": "2026-05-12 23:59:59-04:00",
+    "start": "2026-01-01 00:00:00-05:00"
+  }
+}

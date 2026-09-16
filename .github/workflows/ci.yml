@@ -1,0 +1,28 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - run: pip install -e ".[dev]"
+      - run: ruff check .
+      - run: ruff format --check cross_market tests data/download_binance.py
+      - run: mypy cross_market
+      - run: pytest
+      - name: Verify committed research artifacts
+        run: >-
+          python -c "import json, pathlib;
+          p=pathlib.Path('outputs/portfolio/validation_manifest.json');
+          assert p.exists(); m=json.loads(p.read_text());
+          assert m['final_test']['evaluated'] is True;
+          assert pathlib.Path('outputs/portfolio/final_results.json').exists();
+          assert pathlib.Path('outputs/portfolio/final_test_snapshot.png').exists()"

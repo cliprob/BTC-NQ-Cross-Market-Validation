@@ -1,10 +1,19 @@
-# --- Data & Datasets ---
-# Ignore data folders regardless of case
+# --- Licensed/local market data ---
 [Dd]atasets/
+data/raw/
+data/local/
+configs/research.local.yaml
 
-# Ignore data folder and all CSV files
-data/
-*.csv
+# Runtime research output. Curated portfolio artifacts are committed under
+# outputs/portfolio/.
+outputs/runtime/
+tmp/
+*.log
+report/*.aux
+report/*.out
+report/review_pages/
+cv/*.aux
+cv/*.out
 
 # --- Python Environment & Cache ---
 __pycache__/
@@ -23,3 +32,11 @@ env/
 # --- OS Specific ---
 .DS_Store
 Thumbs.db
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+dist/
+build/
+*.egg-info/

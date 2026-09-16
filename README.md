@@ -1,53 +1,155 @@
-# Cross-Market Correlation Strategy: BTC vs Nasdaq Futures
+# BTC–NQ Cross-Market Signal Validation
 
-Research repository for studying whether short-horizon alignment between Bitcoin and Nasdaq futures can be turned into a tradable regime filter, now extended with ML-enhanced position sizing.
+Leakage-aware research into whether Bitcoin features add predictive value for Nasdaq futures events after realistic
+MNQ costs. This is a **model-validation project, not a profitable-algorithm claim**.
 
-## What This Repo Does
+The original coursework was created by Robert Mazurczak and
+[@AlexSamuseva](https://github.com/AlexSamuseva). This repository remains a fork so the upstream lineage and commit
+authorship stay visible. The validation rebuild was completed by Robert Mazurczak. No license is added without a
+joint decision by the authors.
 
-- Loads and synchronizes 1-minute BTCUSDT and NQ futures data.
-- Normalizes timestamps into a shared timeline to avoid cross-market misalignment.
-- Computes rolling Pearson and Spearman correlation plus directional hit-ratio metrics.
-- Analyzes intraday seasonality, signal quality, event clustering, and forward returns.
-- Runs a sensitivity grid search over signal windows and holding horizons.
-- Implements ML filtering (logistic regression) for trade approval/rejection.
-- Compares equity curves with flat position sizing across baseline, dynamic exits, volatility filters, and ML-enhanced strategies.
+## Result snapshot
 
-## Repository Structure
+The configuration and implementation were frozen before the final period (`2026-01-01`–`2026-05-12`) was opened.
+The test produced 824 non-overlapping candidate events.
 
-- [`data/`](data): local minute-bar datasets used by the notebooks.
-- [`datasets/`](datasets): additional data copies for redundancy.
-- [`research/correlation_research.ipynb`](research/correlation_research.ipynb): main research notebook for correlation analysis and signal generation.
-- [`research/ml_position_sizing.ipynb`](research/ml_position_sizing.ipynb): ML-enhanced position sizing notebook with equity curve comparisons.
-- [`results/`](results): output plots, metrics, and backtest results.
-- [`src/__init__.py`](src/__init__.py): packages src as a Python module.
-- [`src/config.py`](src/config.py): repo-relative paths and default research constants.
-- [`src/data_pipeline.py`](src/data_pipeline.py): CSV loading, schema normalization, timezone alignment, and dataset joins.
-- [`src/indicators.py`](src/indicators.py): rolling correlation, hit-ratio, ADF helper, and volume-weighted feature logic.
-- [`src/simulation.py`](src/simulation.py): signal-state construction, event clustering, and event-study helpers.
-- [`src/optimization.py`](src/optimization.py): sensitivity grid search across windows and hold periods.
-- [`Archive - Previous Works/`](Archive - Previous Works): historical notebooks and outputs kept for reference.
+| Locked strategy | Trades | Gross USD | Net USD | Mean net USD | 95% block-bootstrap CI |
+|---|---:|---:|---:|---:|---:|
+| NQ momentum baseline | 824 | 2,149.50 | -322.50 | -0.39 | [-8.62, 8.49] |
+| BTC–NQ rule | 413 | 4,136.50 | 2,897.50 | 7.02 | [-5.35, 19.49] |
+| Logistic Regression, NQ only | 803 | 1,782.50 | -626.50 | -0.78 | [-9.21, 8.05] |
+| Logistic Regression, cross-market | 742 | 2,610.50 | 384.50 | 0.52 | [-8.54, 10.13] |
+| Random Forest, cross-market | 55 | 1,795.00 | 1,630.00 | 29.64 | [-20.83, 79.09] |
 
-## Data
+**Conclusion:** no model meets the prespecified positive-edge rule: at least 50 final trades, positive net P&L, and a
+positive lower bound of the 95% day-block bootstrap CI. The positive BTC–NQ rule and Random Forest estimates are
+inconclusive, not evidence of deployable alpha.
 
-The repo expects these local CSVs:
+![Locked final-test mean net P&L](outputs/portfolio/final_test_snapshot.png)
 
-- `data/BTCUSDT_1m_2024-03-07_to_2026-03-07.csv`
-- `data/NQ_stitched_1min_2024-03-07_to_2026-03-07.csv`
+The full six-page report is in [`report/main.pdf`](report/main.pdf); its LaTeX source is versioned beside it.
 
-BTC data is treated as UTC-native. NQ data is parsed as `America/Chicago` exchange time and converted to UTC before alignment.
+## What changed from the legacy research
 
-## Workflow
+The audit found that earlier notebook results were dominated by backtest mechanics:
 
-1. For correlation research: Open [`research/correlation_research.ipynb`](research/correlation_research.ipynb). Run setup cells to import from `src`, then explore stats, plots, and interpretations.
-2. For ML position sizing: Open [`research/ml_position_sizing.ipynb`](research/ml_position_sizing.ipynb). It builds on correlation signals, adds ML filtering, and compares equity curves on OOS data.
-3. Extend `src` when code becomes reusable or needed outside notebooks.
+- 258,207 trades generated 14,554 points in one replay—only 0.056 point per trade before costs.
+- The later ML notebook averaged 0.075 point per trade, below one 0.25-point MNQ tick.
+- Candidate returns and labels overlapped, close prices were used as fills after the close was known, and contract
+  rolls or missing bars were not excluded.
+- A fixed time offset mishandled DST; model thresholds and winners were selected with final-period information.
+- Per-trade observations were annualized with an invalid Sharpe convention.
+- An intermediate ranking could promote `profit_factor = inf` configurations with only one to three validation
+  trades.
 
-## Current State
+Historical notebooks, prototype modules, figures, and the old QuantConnect draft are retained under
+[`legacy/`](legacy/) for attribution. Their displayed metrics are not source-of-truth results.
 
-The project has progressed from initial correlation analysis to ML-enhanced position sizing. Key achievements:
-- Implemented flat sizing (size=1.0) for simplicity and robustness, replacing vol-adjusted/Kelly approaches.
-- Added logistic regression classifier for trade filtering, trained on IS data and evaluated OOS.
-- Compares 4 equity curves: baseline, Path B2 exits, SD-filtered, and ML-filtered.
-- Updated `src` files for compatibility; added `__init__.py` for packaging.
+## Methodology
 
-Note: Logistic regression underperforms on OOS (rejects all trades), so ML tuning is needed (e.g., probability thresholds, hyperparameters, or alternative models like RandomForest). The core strategy is ready—run notebooks to validate, then integrate ML if improved.
+The research question is deliberately narrow:
+
+> Do BTC-derived features improve predictive value over a comparable NQ-only momentum baseline after costs?
+
+The maintained pipeline applies these controls:
+
+1. NQ timestamps are localized with `America/Chicago`, converted through UTC, and evaluated in
+   `America/New_York` using CME Equity trading dates.
+2. Features are available at minute `t` close. Entry is `t+1` open; exit is a future open.
+3. Events crossing a missing bar, contract roll, day boundary, or session end are excluded.
+4. A global cooldown permits one position at a time, so labels and trades do not overlap.
+5. Expanding quarterly walk-forward folds use a purge longer than the maximum holding horizon.
+6. Scaling, coefficients, and permutation importance are fitted within folds. OOF probabilities drive Brier and
+   reliability diagnostics.
+7. The NQ-only baseline, BTC–NQ rule, Logistic Regression, and constrained Random Forest are compared. SVM appears
+   only in the project history.
+8. Threshold selection requires at least 50 validation trades. Profit factor is capped and cannot determine
+   feasibility.
+9. The versioned manifest locks the sanitized configuration, source hash, event threshold, model thresholds, data
+   dates, and trial count before final evaluation.
+
+The cost scenario represents one MNQ contract: `$2 × index`, a `0.25`-point tick worth `$0.50`, one tick of
+slippage per side, and `$1` commission per side (`$3` round trip). Contract specifications come from
+[CME](https://www.cmegroup.com/markets/equities/nasdaq/micro-e-mini-nasdaq-100.html); commission assumptions are
+configurable and should be checked against the current
+[IBKR schedule](https://www.interactivebrokers.com/en/pricing/commissions-futures.php).
+
+Selection-bias discussion follows the
+[Deflated Sharpe Ratio](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2460551) and
+[Probability of Backtest Overfitting](https://papers.ssrn.com/sol3/Papers.cfm?abstract_id=2326253) literature.
+
+## Quickstart
+
+Requires Python 3.11+.
+
+```bash
+python -m pip install -e ".[dev]"
+cp configs/research.yaml configs/research.local.yaml
+# edit only local BTC/NQ paths and output directory
+python -m cross_market.run --config configs/research.local.yaml --stage validation
+python -m cross_market.run --config configs/research.local.yaml --stage final
+```
+
+The final command verifies the configuration and source hashes against the validation lock. It refuses to rerun an
+already evaluated final period unless `--force` is supplied; that override is for auditing, not ordinary research.
+
+Run quality checks with:
+
+```bash
+python -m ruff check .
+python -m ruff format --check cross_market tests data/download_binance.py
+python -m mypy cross_market
+python -m pytest
+```
+
+## Data access
+
+Raw data are intentionally absent from Git. The expected schemas are documented in [`data/README.md`](data/README.md).
+
+Download public Binance USD-M BTCUSDT bars:
+
+```bash
+python data/download_binance.py \
+  --start 2024-03-07 --end 2026-05-13 \
+  --output data/raw/BTCUSDT_um-futures_1m.csv
+```
+
+NQ data must be supplied locally as one-minute OHLCV bars with a contract identifier. The repository does not and
+will not publish IBKR-derived market data. Small synthetic CSV fixtures are included solely for tests.
+
+## Repository structure
+
+```text
+cross_market/       maintained event, validation, model, metric, and artifact code
+configs/            public research configuration; local path override is ignored
+data/               schema, Binance downloader, and no proprietary datasets
+notebooks/          thin, import-only research summary
+tests/              unit, regression, notebook-smoke, and integration coverage
+outputs/portfolio/  frozen manifest, trial ledger, metrics, and figures
+report/              six-page LaTeX/PDF research report
+cv/                  updated LaTeX CV source
+legacy/              original notebooks and prototypes; not source of truth
+```
+
+## Reproducibility artifacts
+
+- [`validation_manifest.json`](outputs/portfolio/validation_manifest.json): locked settings, OOF results, feature
+  diagnostics, trial count, source/config hashes, and final-result hash.
+- [`trial_ledger.csv`](outputs/portfolio/trial_ledger.csv): all feasible probability-threshold comparisons.
+- [`final_results.json`](outputs/portfolio/final_results.json): untouched-period metrics, block-bootstrap intervals,
+  Brier scores, verdicts, and PSI drift diagnostics.
+- [`reliability_oof.png`](outputs/portfolio/reliability_oof.png): fold-local probability reliability.
+
+GitHub Actions runs lint, format checks, static typing, `pytest`, notebook smoke validation, and committed-artifact
+integrity checks. Full research requires the two local minute-bar datasets and remains an explicit command.
+
+## Skills demonstrated
+
+- Event-driven backtesting with causal execution and non-overlapping labels
+- Futures contract economics, session calendars, DST, roll, and gap handling
+- Purged expanding walk-forward validation and strict final-test isolation
+- Logistic Regression pipelines and constrained Random Forests in scikit-learn
+- OOF calibration, Brier score, permutation importance, PSI drift, and block bootstrap
+- Selection-bias controls, trial logging, hashed research manifests, testing, typing, and CI
+
+This repository does not include QuantConnect integration and does not claim live- or paper-trading readiness.

@@ -1,0 +1,101 @@
+\documentclass[10pt,a4paper]{article}
+
+\usepackage[margin=0.52in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{enumitem}
+\usepackage{titlesec}
+\usepackage[hidelinks]{hyperref}
+\usepackage{xcolor}
+
+\pagestyle{empty}
+\setlength{\parindent}{0pt}
+\setlength{\tabcolsep}{0pt}
+\setlist[itemize]{leftmargin=1.25em,itemsep=0.5pt,topsep=1.5pt,parsep=0pt,partopsep=0pt}
+\titleformat{\section}{\bfseries\large}{}{0pt}{}[\vspace{-2pt}\titlerule]
+\titlespacing*{\section}{0pt}{5pt}{2pt}
+\pdfgentounicode=1
+
+\newcommand{\entry}[4]{%
+  \textbf{#1}\hfill #2\\[-1pt]
+  \textit{#3}\hfill \textit{#4}\vspace{-2pt}
+}
+
+\newcommand{\project}[3]{%
+  \href{#1}{\textbf{#2}}\hfill \textit{#3}\vspace{-2pt}
+}
+
+\begin{document}
+\small
+
+\begin{center}
+  {\LARGE\bfseries ROBERT MAZURCZAK}\\[2pt]
+  Warsaw, Poland \textbar{} +48 575 727 500 \textbar{}
+  \href{mailto:airmazurczak@gmail.com}{airmazurczak@gmail.com} \textbar{}
+  \href{https://github.com/cliprob}{GitHub} \textbar{}
+  \href{https://www.linkedin.com/in/robert-mazurczak-206a12209}{LinkedIn}
+\end{center}
+\vspace{-7pt}
+
+\section{EDUCATION}
+\entry{University of Warsaw}{2025--2027 (Expected)}{M.A. in Quantitative Finance, Faculty of Economic Sciences}{Warsaw, Poland}
+\begin{itemize}
+  \item Relevant Coursework: Time Series Analysis, Machine Learning in Finance, Derivatives Markets, Risk Analysis and Modelling, C++ in Quantitative Finance, Option Pricing and High-Frequency Data.
+\end{itemize}
+
+\entry{University of Warsaw}{2022--2025}{B.A. in Business Management, Faculty of Management}{Warsaw, Poland}
+\begin{itemize}
+  \item Thesis: \textit{Investments in Equity and Debt Instruments in Developed and Emerging Markets from 2000 to 2024}.
+\end{itemize}
+
+\section{EXPERIENCE}
+\entry{Goldman Sachs}{Jul 2026--Aug 2026}{Summer Analyst, Regulatory Due Diligence -- Global Banking \& Markets}{Warsaw, Poland}
+\begin{itemize}
+  \item Resolved 4,000+ trading-account compliance exceptions in two weeks versus a four-week target; identified recurring patterns and translated them into a Jira backlog comprising one epic and six user stories for technology partners.
+  \item Co-developed an Outlook drafting solution using a Word \texttt{.dotm} template and VBA deployment macro, reducing drafting time per request by approximately 50\%; selected for multi-location rollout and potential adoption by additional teams.
+  \item Designed and prototyped an agent-based automation alternative to an existing licensed workflow, documenting process logic and identifying opportunities to reduce manual effort and vendor-tool dependence.
+\end{itemize}
+
+\entry{Echo Investment}{Summer 2025}{Intern, Finance, Funding \& Controlling}{Warsaw / Kielce, Poland}
+\begin{itemize}
+  \item Supported financial planning, investment analysis, internal reporting, cash-flow monitoring and financing processes across active real-estate projects.
+  \item Participated in meetings with internal and external stakeholders and performed on-site compliance and operational-risk reviews, including HSE checks.
+\end{itemize}
+
+\entry{COS}{2024}{Managerial Intern \& Sales Advisor}{Warsaw, Poland}
+\begin{itemize}
+  \item Supported KPI-driven store operations, customer service and team coordination in a fast-paced retail environment.
+\end{itemize}
+
+\section{PROJECTS}
+\project{https://github.com/cliprob/Garch-VaR-Portfolio-Risk}{Portfolio Value-at-Risk with GARCH-Family Models}{Python, GARCH/EGARCH, Docker}
+\begin{itemize}
+  \item Built a reproducible multi-asset VaR workflow using GARCH/EGARCH models, volatility diagnostics, rolling 1\% and 5\% forecasts and Kupiec backtests; packaged with Docker and GitHub Actions.
+\end{itemize}
+
+\project{https://github.com/cliprob/BTC-NQ-Cross-Market-Validation}{BTC--Nasdaq Cross-Market Signal Validation}{Python, scikit-learn, Walk-Forward CV}
+\begin{itemize}
+  \item Built a leakage-aware event-driven pipeline for 1-minute BTC and Nasdaq futures; compared rule-based signals, Logistic Regression and Random Forest using purged walk-forward validation, realistic costs, calibration and feature-drift diagnostics.
+\end{itemize}
+
+\section{ACHIEVEMENTS \& CERTIFICATIONS}
+\begin{itemize}
+  \item Trade'em Hackathon 2025 -- 3rd Place and Rector of SGH Award in a quantitative trading competition.
+  \item Goldman Sachs Engineering Hackathon 2024 -- Special Award for an application-security assessment prototype.
+  \item Coursera: Python and Statistics for Financial Analysis (HKUST) and Game Theory (Stanford Online/UBC).
+  \item DataCamp: Advanced Git, Intermediate GitHub Concepts and Intermediate Docker.
+  \item J.P. Morgan Investment Banking Job Simulation -- M\&A process, target screening, financial analysis and investment recommendation.
+  \item Cambridge English C1 Advanced -- Grade A, corresponding to CEFR C2.
+\end{itemize}
+
+\section{SKILLS \& INTERESTS}
+\begin{itemize}
+  \item \textbf{Programming:} Python (pandas, NumPy, matplotlib, scikit-learn), C++ (coursework), VBA.
+  \item \textbf{Tools:} Git, GitHub, GitHub Actions (CI/CD), Docker, Make, Jira, Jupyter, Excel, Power BI, Word and PowerPoint.
+  \item \textbf{Quantitative:} Time-series analysis, VaR and GARCH, derivatives pricing, risk modelling, machine learning and asset allocation.
+  \item \textbf{Languages:} Polish (Native), English (CEFR C2).
+  \item \textbf{Interests:} Quantitative Trading \& Financial Markets, Web Development \& Digital Product Building, Powerlifting \& Strength Training, Music Production for International Artists.
+\end{itemize}
+
+\end{document}

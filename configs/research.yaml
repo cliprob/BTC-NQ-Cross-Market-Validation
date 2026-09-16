@@ -1,0 +1,44 @@
+version: 1
+
+data:
+  btc_path: data/raw/BTCUSDT_um-futures_1m.csv
+  nq_path: data/raw/NQ_front_month_1m.csv
+  nq_source_timezone: America/Chicago
+  analysis_timezone: America/New_York
+
+research:
+  session_start: "09:30"
+  entry_end: "15:30"
+  session_end: "16:00"
+  momentum_window: 15
+  impulse_quantile: 0.70
+  correlation_window: 55
+  hit_ratio_threshold: 0.60
+  spearman_threshold: 0.30
+  horizon_minutes: 30
+  purge_minutes: 60
+  min_validation_trades: 50
+  min_test_trades: 50
+  train_end: "2025-06-30 23:59:59"
+  validation_end: "2025-12-31 23:59:59"
+  test_start: "2026-01-01 00:00:00"
+  test_end: "2026-05-12 23:59:59"
+
+costs:
+  name: MNQ_CONSERVATIVE
+  tick_size_points: 0.25
+  point_value_usd: 2.0
+  slippage_ticks_per_side: 1.0
+  commission_usd_per_side: 1.0
+
+models:
+  logistic_c: 0.1
+  rf_estimators: 300
+  rf_max_depth: 4
+  rf_min_samples_leaf: 20
+  random_state: 42
+  threshold_grid: [0.45, 0.50, 0.55, 0.60, 0.65, 0.70]
+
+output:
+  directory: outputs/runtime
+
